@@ -5,6 +5,7 @@ TASK #1
 Напишіть будь ласка функцію, що приймає на вхід список людей, у якому кожна людина описана як словник  ключами “name”, “surname”.
 А повертає структуру з іменами і кількістю чашок які потрібно замовити.
 """
+from array import array
 from collections import Counter
 test_list = [{'name': 'Alex', 'surname':'Liakhov'}, { 'name': 'Micola', 'surname' :'Liakhov1'}, { 'name': 'Alex', 'surname' :'Micola'}]
 def NameCounter (var):
@@ -95,7 +96,7 @@ def Years (a,b,c):
     return abc
 c = [13, 12, 235, 1996]
 
-print (Years(1991, 2019, c))
+# print (Years(1991, 2019, c))
 
 
 """
@@ -125,3 +126,67 @@ TASK #6
 # print (b)
 
 #6.2
+a = [1, 0, 100, -20]
+MaxElement = max(a)
+IndexMaxElement = a.index(max(a))
+print ( f'Max element = {MaxElement}', f'Index of element = {IndexMaxElement}')
+
+#6.3
+
+a = [1, 0, 100, -20]
+MinElement = min(a)
+IndexMinElement = a.index(min(a))
+print ( f'Max element = {MinElement}', f'Index of element = {IndexMinElement}')
+
+#6.4
+b = 0
+for i in range(len(a)):
+    if i > 0 :
+        b = b + 1
+print (f'Количество элементов  больше нуля : {b}')
+
+#6.5
+a = [1, 0, 100, -20]
+for i in range(len(a)):
+    a[i]=a[i] + i
+print (f'Результат: {a}')
+
+#6.6
+
+#Способ 1
+def shift(lst, k):
+    for i  in range(k):
+        last = lst.pop()
+        lst.insert(0, last)
+a = [1, 0, 100, -20]
+shift(a, 2)
+print (f'Результат спасоба 1 {a}')
+
+#Способ
+
+from collections import deque
+a = [1, 0, 100, -20]
+k = 2
+d = deque(a)
+d.rotate(k)
+result = list(d)
+print (f'Результат спасоба 2 {result}')
+
+# 6.7
+a = a = [1, 2, 3, 4, 5]
+b = [3, 4, 7, 9, 105]
+result = set(a) - set (b)
+print (result)
+
+# 6.8
+a = a = [1, 2, 3, 4, 5]
+b = [3, 4, 7, 9, 105]
+c = a+b
+print(f'Отсортированный массив : {sorted(c)}')
+
+
+"""
+TASK #7
+
+Создать чать на pytnon 
+"""
