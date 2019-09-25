@@ -1,5 +1,6 @@
 import socket, time
 from threading import Thread
+from multiprocessing import Process, Queue
 
 host = "127.0.0.1"
 port = 8080
@@ -40,6 +41,16 @@ def server():
         sock.send(buf)
         print(buf.decode('utf8'))
     sock.close()
+q = Queue()
 
-Thread(target = server()).start()
-Thread(target = client()).start()
+process_one = Process(target=server())
+process_two = Process(target=client())
+
+process_one.start()
+process_two.start()
+
+q.close()
+q.join_thread()
+
+process_one.join()
+process_two.join()
