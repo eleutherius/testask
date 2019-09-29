@@ -1,20 +1,38 @@
-import socket
-import time
+import socket, threading
+import pickle
 
-host = "127.0.0.1"
-port = 8080
+def SendMessage(uname):
+    while True:
+        MsDict={}
+        msg = input('\nMe > ')
+        MsDict['uname'] = uname
+        MsDict['msg'] = msg
+        # print (f'MyDiict {str(MsDict)}')
+        data = pickle.dumps (MsDict, -1)
+        cli_sock.send(data)
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((host, port))
-# print(s.recv(1024).decode('utf8'))
+def ReceiveMessage():
+    while True:
+        data_loaded = pickle.loads(cli_sock.recv(1024))
+        uname = data_loaded.get('uname')
+        msg = data_loaded.get ('msg')
+        print(f'\n{uname}> {msg}')
 
-while True:
-    buf = input()
-    s.send(buf.encode('utf8'))
-    result = s.recv(1024)
-    print('Ответ сервера: ', result.decode('utf8'))
-    if buf == "exit":
-        break
-s.close()
+if __name__ == "__main__":
+    # socket
+    cli_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-time.sleep(10)
+    # connect
+    HOST = 'localhost'
+    PORT = 5021
+    cli_sock.connect((HOST, PORT))
+    print('Connected to remote host...')
+    uname = input('Enter your name to enter the chat > ')
+    print (f'Hello {uname}!')
+    cli_sock.send(uname.encode())
+
+    thread_send = threading.Thread(target = SendMessage, args=[uname])
+    thread_send.start()
+
+    thread_receive = threading.Thread(target = ReceiveMessage)
+    thread_receive.start()
