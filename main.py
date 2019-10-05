@@ -186,7 +186,7 @@ abc = [1, 2, 3, 4, 5]
 def shift(lst, steps):
     for i in range(steps):
         lst.insert(0, lst.pop())
-shift(abc, 1)
+shift(abc, 1 )
 print (f'Сдвиг вправо: {abc}')
 """
 6.7

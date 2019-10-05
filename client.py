@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     # connect
     HOST = 'localhost'
-    PORT = 5021
+    PORT = 50922
     cli_sock.connect((HOST, PORT))
     print('Connected to remote host...')
     uname = input('Enter your name to enter the chat > ')
