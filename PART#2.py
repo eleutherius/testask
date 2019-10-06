@@ -76,6 +76,7 @@ class EquilateralTriangle(Triangle):
 Имплементировать методы который позволяют обходить дерево горизонтально и вертикально. 
 """
 
+
 """
 Задача3: Логирование. Необходимо реализовать логирование при помощи классов. 
 Класс логирования должен обеспечивать возможность как записи в текстовьій файл,
@@ -86,38 +87,57 @@ class EquilateralTriangle(Triangle):
 P.S. Копировать решение из стандартной библиотеке - не красиво в плане обучения. Либо решайте сами, либо пропускайте задачу.
 """
 import datetime
+import inspect
+# print (inspect.currentframe().f_back.f_lineno)
+
+from inspect import currentframe, getframeinfo
+frameinfo = getframeinfo(currentframe())
+
+
 
 class log:
-    def __init__(self, msg=None, path='./logs.txt', LEVEL="INFO"):
-        self.msg = msg
+    def __init__(self, path='./logs.txt', LEVEL="INFO"):
         self.path = path
         self.LEVEL = LEVEL
 
-    def formatting(self, time, err=False):
+    def formatting(self, time, msg,  err=False):
         Red = '\033[91m'
         Green = '\033[92m'
-        BOLD = '\033[1m'
-        ITALIC = '\033[3m'
-        UNDERLINE = '\033[4m'
         END = '\033[0m'
 
         if err:
-            print (f"{Red}{time}{self.msg}{END}")
+            print (f"{Red}{time} - {msg} {END}")
         else:
-            print (f"{Green}{time}{self.msg}{END}")
+            print (f"{Green}{time} - {msg} {END}")
 
-    def writing(self, time):
+    def writing(self, time, msg):
         with open (self.path, "a") as f:
-            # time = datetime.datetime.now().strftime("%Y-%m-%d-%H.%M.%S")
-            f.write(f"{time}{self.msg}")
+            f.write(f"{time} - {msg} \n")
 
     def logining(self, msg=None):
+        if self.LEVEL == "INFO":
+            time = datetime.datetime.now ( ).strftime ("%Y-%m-%d-%H.%M.%S")
+            self.formatting(time, msg)
+        if self.LEVEL == "ALERT":
+            time = datetime.datetime.now ( ).strftime ("%Y-%m-%d-%H.%M.%S")
+            self.formatting(time, msg)
+        if self.LEVEL == "WARNING":
+            time = datetime.datetime.now ( ).strftime ("%Y-%m-%d-%H.%M.%S")
+            self.writing(time, msg)
+        if self.LEVEL == "CRITICAL":
+            time = datetime.datetime.now ( ).strftime ("%Y-%m-%d-%H.%M.%S")
+            self.writing(time, msg)
+            self.formatting(time, msg, err=True)
         if self.LEVEL == "DEBUG":
             time = datetime.datetime.now ( ).strftime ("%Y-%m-%d-%H.%M.%S")
-            self.writing(time)
-            self.formatting(time)
-log (LEVEL="DEBUG")
-log.logining("sdgsdg")
+            self.writing(time, msg)
+            self.formatting(time, msg, err=True)
+
+
+mylog = log (LEVEL="DEBUG")
+msg = "Some info message"
+mylog.logining(msg=f'{msg} - File [{frameinfo.filename}] Line : [{frameinfo.lineno}]')
+
 
 """
 Задача4: напишите класс "Elevator" для предположим N этажного дома. объект данного класса должен уметь:
@@ -130,7 +150,57 @@ log.logining("sdgsdg")
 - звёздочка* - реализуйте возможность подбирать людей при движении вниз. пример: если едем с эт.10 на эт.1,
  должна быть возможность остановить лифт на эт.5, после чего автоматически продолжить движение.
 """
+import time
+class Elevator():
+    def __init__(self,  DefFloorNum=1):
 
+        self.WeightMax = 500
+        self.NumberOfFloor = 10
+        self.FloorNum=DefFloorNum
+    def run(self):
+        n = abs(self.FloorNum - self.NumberOfFloor)
+        if  n == 0:
+            print (f'Floor #{self.FloorNum} Weight:{self.weight}')
+        elif n > 0:
+            print (f'Floor #{self.FloorNum} Weight:{self.weight}')
+            time.sleep (1)
+            try:
+                for i in range(0, n):
+                    if  self.NumberOfFloor - self.FloorNum  < 0 :
+                        self.FloorNum -= 1
+                    elif self.NumberOfFloor - self.FloorNum  > 0 :
+                        self.FloorNum += 1
+                    print (f'Floor #{self.FloorNum} Weight:{self.weight}')
+                    time.sleep(1)
+                # self.FloorNum = self.NumberOfFloor
+            except KeyboardInterrupt:
+                print (f"""**************************************************
+                Interrupt!!!!!
+                We are stop on the floor #{self.FloorNum}""")
+    def InputFloor(self):
+        Floor = int(input ("Input floor: "))
+        if Floor >= 1 and Floor <= 10:
+            self.Weight(int(input ("Weight: ")))
+            self.NumberOfFloor = Floor
+            self.run()
+
+        else:
+            print ("Wrong input")
+    def Weight (self, weight):
+        self.weight = weight
+        if weight > 0:
+            if self.weight > self.WeightMax:
+                print ("Wrong Waigt")
+                exit(1)
+        if weight < 0:
+            if self.weight < 0:
+                print ("Wrong Waigt")
+                exit(1)
+
+
+lift  = Elevator(DefFloorNum=1)
+lift.InputFloor()
+lift.InputFloor()
 
 """
 Задача5: реализуйте класс "BrokenCalc", у которого неправильно работают все функции
