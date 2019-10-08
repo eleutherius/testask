@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../QA/.idea/QA.iml" filepath="$PROJECT_DIR$/../QA/.idea/QA.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/testask.iml" filepath="$PROJECT_DIR$/.idea/testask.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../word2html/.idea/word2html.iml" filepath="$PROJECT_DIR$/../word2html/.idea/word2html.iml" />
     </modules>
   </component>
 </project>

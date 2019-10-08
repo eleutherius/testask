@@ -26,11 +26,3 @@ for pre, fill, node in RenderTree(udo):
 print(dan.children)
 (Node('/Udo/Dan/Jet'), Node('/Udo/Dan/Jan'), Node('/Udo/Dan/Joe'))
 
-
-# OrderedDict([('a', 'root'),
-#              ('children',
-#               [OrderedDict([('a', 'sub0'),
-#                             ('children',
-#                              [OrderedDict([('a', 'sub0A'), ('b', 'foo')]),
-#                               OrderedDict([('a', 'sub0B')])])]),
-#                OrderedDict([('a', 'sub1')])])])
