@@ -5,6 +5,8 @@
 4. Проверить это с момощью REST API
 5. *Проверить Walk test
 """
+from builtins import list
+
 from ipmp.emu.neo import NeoPanel
 from collections import OrderedDict
 import time
@@ -13,36 +15,48 @@ import logging
 from ipmp.pages.rest.api import GuiApi
 import gevent
 from ipmp.emu.neo.devdb import DeviceType
+import logging
+
 # from ipmp.emu.neo.devdb import DeviceNames
 DeviceTypeNumbers = [i for i in DeviceType]
+logger = logging.basicConfig(level='DEBUG')
+
 
 
 # print (DeviceTypeNumbers)
-IP = "192.168.2.157"
+IP = "94.125.123.58"
 serial = "C00000000002"
 detector = "CONTACT"
 
-panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128')
-# tasks = list()
-# panel.config.host = IP
-# notifications = {'zone1': 'tampler'}
-# for i in DeviceTypeNumbers:
-#     panel.config.devices.add_device(i)
-#     # panel.config.devices.addNotification('keyfob')
-#
-# tasks.append(gevent.spawn(panel.connectITv2))
-#             # time.sleep(1)
+panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128', logger=logger)
+tasks = list()
+panel.config.host = IP
+notifications = {'zone1': 'tampler'}
+for i in DeviceTypeNumbers:
+    panel.config.devices.add_device(i)
+    # panel.config.devices.addNotification('keyfob')
+
+tasks.append(gevent.spawn(panel.connectITv2))
+            # time.sleep(1)
 
 panel.sendInit()
-print ("Hello")
-panel.sendSiaEvent (code ='BA', zone=1)
-print ("Hello2")
+# panel.sendSiaEvent(code ='BA', zone=1)
 panel.sendHeartBeat()
-# gevent.joinall(tasks)
+gevent.joinall(tasks)
+
+
+api = GuiApi(IP, logger)
 
 
 
-
+# def show():
+#         logger = logging.getLogger('test')
+#         logger.setLevel('DEBUG')
+#         logger.addHandler(logging.StreamHandler())
+#
+#
+#             api = GuiApi(self.ip, logger)
+#             api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
 
 
 
