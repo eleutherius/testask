@@ -14,21 +14,30 @@ from ipmp.pages.rest.api import GuiApi
 import gevent
 from ipmp.emu.neo.devdb import DeviceType
 # from ipmp.emu.neo.devdb import DeviceNames
-DeviceTypeNumbers = OrderedDict([(i, j) for j, i in list(DeviceType.items())])
-print (DeviceTypeNumbers)
-# IP = "94.125.123.59"
-# serial = "B00000000002"
-# detector = "CONTACT"
-#
-# panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128')
+DeviceTypeNumbers = [i for i in DeviceType]
+
+
+# print (DeviceTypeNumbers)
+IP = "192.168.2.157"
+serial = "C00000000002"
+detector = "CONTACT"
+
+panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128')
 # tasks = list()
 # panel.config.host = IP
-# panel.config.devices.add_device(detector)
+# notifications = {'zone1': 'tampler'}
+# for i in DeviceTypeNumbers:
+#     panel.config.devices.add_device(i)
+#     # panel.config.devices.addNotification('keyfob')
 #
 # tasks.append(gevent.spawn(panel.connectITv2))
 #             # time.sleep(1)
-# panel.sendInit()
-# panel.sendHeartBeat()
+
+panel.sendInit()
+print ("Hello")
+panel.sendSiaEvent (code ='BA', zone=1)
+print ("Hello2")
+panel.sendHeartBeat()
 # gevent.joinall(tasks)
 
 

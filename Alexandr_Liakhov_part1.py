@@ -7,15 +7,20 @@ TASK #1
 """
 from array import array
 from collections import Counter
-test_list = [{'name': 'Alex', 'surname':'Liakhov'}, { 'name': 'Micola', 'surname' :'Liakhov1'}, { 'name': 'Alex', 'surname' :'Micola'}]
-def NameCounter (var):
+
+test_list = [{'name': 'Alex', 'surname': 'Liakhov'}, {'name': 'Micola', 'surname': 'Liakhov1'},
+             {'name': 'Alex', 'surname': 'Micola'}]
+
+
+def _name_counter(var):
     names = []
     for i in var:
-         names.append(i['name'])
-    all = dict(Counter(names))
-    all['Number of all cups'] = len (names)
+        names.append (i['name'])
+    All = dict(Counter(names))
+    All['Number of all cups'] = len(names)
 
-    return all
+    return All
+
 
 # print(NameCounter(test_list))
 
@@ -24,21 +29,23 @@ TASK #2
 
 Написать метод который принимет два числа a, b и возвращает все числа Фибоначчи на отрезке [a, b]
 """
-def Fibonacci (a, b):
+
+
+def Fibonacci(a, b):
     out_list = []
     fibonacci = []
     for n in range (0, b):
-        if n == 0 :
-            fibonacci.append(0)
+        if n == 0:
+            fibonacci.append (0)
         if n == 1:
-            fibonacci.append(1)
+            fibonacci.append (1)
         if n > 1:
-            fibonacci.append(fibonacci[n -1] + fibonacci[n -2])
+            fibonacci.append (fibonacci[n - 1] + fibonacci[n - 2])
     for i in fibonacci:
         if i >= a and i <= b:
-
-         out_list.append(i)
+            out_list.append (i)
     return out_list
+
 
 # print (Fibonacci(10, 100))
 
@@ -59,19 +66,22 @@ TASK #4
 если тип обоих переменных строка - сообщить, является ли строка b подстрокой строки a
 если переменные разного типа, вывести сообщение об ошибке (любое)
 """
-def MyFunction (a, b):
-    if type(a) is int and type(b) is int:
-         if a > b:
-            print(a)
-         if a < b:
+
+
+def MyFunction(a, b):
+    if type (a) is int and type (b) is int:
+        if a > b:
+            print (a)
+        if a < b:
             print (b)
-    elif type(a) is str and type(b) is str:
+    elif type (a) is str and type (b) is str:
         if b in a:
-             print ('b is sub string of a')
+            print ('b is sub string of a')
         else:
-            print('b is not sub  string of a')
+            print ('b is not sub  string of a')
     else:
         print ('ERRR! differend types')
+
 
 # MyFunction ('hello', 'h')
 
@@ -83,17 +93,22 @@ TASK #5
 список років (c). Функція має попертати список високосних років між а і b, крім вказаних у c
 """
 
+
 def IntercalaryYear(year):
     if year % 4 != 0 or (year % 100 == 0 and year % 400 != 0):
         pass
     else:
         return year
-def Years (a,b,c):
-    MySET=set()
-    for i in range(a, b):
-        MySET.add(IntercalaryYear(i))
-    abc = MySET - set(c)
+
+
+def Years(a, b, c):
+    MySET = set ( )
+    for i in range (a, b):
+        MySET.add (IntercalaryYear (i))
+    abc = MySET - set (c)
     return abc
+
+
 c = [13, 12, 235, 1996]
 
 # print (Years(1991, 2019, c))
@@ -111,7 +126,6 @@ a = [1, 2, 3]
 # print (f'Сумма элементов массива{b}')
 
 
-
 # b = sum (a)
 # print (f'Сумма элементов массива{b}')
 
@@ -121,12 +135,9 @@ a = [1, 2, 3]
 - Найти максимальный элемент, значение и индекс
 """
 a = [1, 0, 100, -20]
-MaxElement = max(a)
-IndexMaxElement = a.index(max(a))
-print ( f'Max element = {MaxElement}', f'Index of element = {IndexMaxElement}')
-
-
-
+MaxElement = max (a)
+IndexMaxElement = a.index (max (a))
+print (f'Max element = {MaxElement}', f'Index of element = {IndexMaxElement}')
 
 """
 6.3
@@ -134,14 +145,13 @@ print ( f'Max element = {MaxElement}', f'Index of element = {IndexMaxElement}')
 """
 
 a = [1, 0, 100, -20]
-MinElement = min(a)
-IndexMinElement = a.index(min(a))
-print ( f'Max element = {MinElement}', f'Index of element = {IndexMinElement}')
-
+MinElement = min (a)
+IndexMinElement = a.index (min (a))
+print (f'Max element = {MinElement}', f'Index of element = {IndexMinElement}')
 
 b = 0
-for i in range(len(a)):
-    if i > 0 :
+for i in range (len (a)):
+    if i > 0:
         b = b + 1
 print (f'Количество элементов  больше нуля : {b}')
 
@@ -151,8 +161,8 @@ print (f'Количество элементов  больше нуля : {b}')
 """
 
 a = [1, 0, 100, -20]
-for i in range(len(a)):
-    a[i]=a[i] + i
+for i in range (len (a)):
+    a[i] = a[i] + i
 print (f'Результат: {a}')
 
 """
@@ -160,33 +170,41 @@ print (f'Результат: {a}')
 - Прибавить к элементам массива их индекс
 """
 
-#Способ 1
+
+# Способ 1
 def shift(lst, k):
-    for i  in range(k):
-        last = lst.pop()
-        lst.insert(0, last)
+    for i in range (k):
+        last = lst.pop ( )
+        lst.insert (0, last)
+
+
 a = [1, 0, 100, -20]
-shift(a, 2)
+shift (a, 2)
 print (f'Результат спасоба 1 {a}')
 
-#Способ
+# Способ
 
 from collections import deque
+
 a = [1, 0, 100, -20]
 k = 2
-d = deque(a)
-d.rotate(k)
-result = list(d)
+d = deque (a)
+d.rotate (k)
+result = list (d)
 print (f'Результат спасоба 2 {result}')
 """
 6.6
 - Циклический сдвиг элементов массива на k- позиций вправо
 """
 abc = [1, 2, 3, 4, 5]
+
+
 def shift(lst, steps):
-    for i in range(steps):
-        lst.insert(0, lst.pop())
-shift(abc, 1 )
+    for i in range (steps):
+        lst.insert (0, lst.pop ( ))
+
+
+shift (abc, 1)
 print (f'Сдвиг вправо: {abc}')
 """
 6.7
@@ -194,7 +212,7 @@ print (f'Сдвиг вправо: {abc}')
 """
 a = a = [1, 2, 3, 4, 5]
 b = [3, 4, 7, 9, 105]
-result = set(a) - set (b)
+result = set (a) - set (b)
 print (result)
 
 """
@@ -203,9 +221,8 @@ print (result)
 """
 a = [1, 2, 3, 4, 5]
 b = [3, 4, 7, 9, 105]
-c = a+b
-print(f'Отсортированный массив : {sorted(c)}')
-
+c = a + b
+print (f'Отсортированный массив : {sorted (c)}')
 
 """
 TASK #7
