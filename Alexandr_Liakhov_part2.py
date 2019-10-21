@@ -252,3 +252,34 @@ print (myob.square(2, 3, 4, 5, 6))
 Создать структуру данных типа дерево. Каждый узел дерева должен иметь строковое представление в виде "путь к вершине". 
 Имплементировать методы который позволяют обходить дерево горизонтально и вертикально. 
 """
+
+class Bunch(dict):
+    def __init__(self, *args, **kwds):
+        super(Bunch, self).__init__(*args, **kwds)
+        self.__dict__ = self
+
+
+T = Bunch
+t = T(left=T(left="a", right="b"), right=T(left=T(left=T(left="q", right="z"), right="y")))
+
+
+def vertical(dict1):
+    for k, v in dict1.items():
+
+        if type(v) == str:
+            print(f"key: {k} value: {v}")
+        elif type(v) == Bunch:
+            vertical(v)
+
+
+def horizontal(dict1, var1):
+    for k, v in dict1.items():
+        if var1 == k and type(v) != Bunch:
+            print("horizontal", k, v)
+        elif var1 == k and type(v) == Bunch:
+            horizontal(v, var1)
+
+
+
+vertical(t)
+horizontal(t, "left")
