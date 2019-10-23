@@ -16,122 +16,124 @@ from ipmp.pages.rest.api import GuiApi
 import gevent
 from ipmp.emu.neo.devdb import DeviceType
 import logging
-
-# from ipmp.emu.neo.devdb import DeviceNames
-DeviceTypeNumbers = [i for i in DeviceType]
-logger = logging.basicConfig(level='DEBUG')
+import random
+import threading
 
 
-
-# print (DeviceTypeNumbers)
-IP = "94.125.123.58"
-serial = "C00000000002"
-detector = "CONTACT"
-
-panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128', logger=logger)
-tasks = list()
-panel.config.host = IP
-notifications = {'zone1': 'tampler'}
-for i in DeviceTypeNumbers:
-    panel.config.devices.add_device(i)
-    # panel.config.devices.addNotification('keyfob')
-
-tasks.append(gevent.spawn(panel.connectITv2))
-            # time.sleep(1)
-
-panel.sendInit()
-# panel.sendSiaEvent(code ='BA', zone=1)
-panel.sendHeartBeat()
-gevent.joinall(tasks)
+def random_serial():
+    List = ["A", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    random.shuffle(List)
+    _serial = ''.join([random.choice(List) for x in range(12)])
+    return _serial
 
 
-api = GuiApi(IP, logger)
+IP = "192.168.99.246"
+serial = random_serial()
+
+
+def add_dsc_panel():
+    panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128',
+                     logger=logging.basicConfig(level='DEBUG'))
+    panel.config.host = IP
+    for i in DeviceType:
+        panel.config.devices.add_device(i)
+    panel.set_device_trouble("tamper", 1, 2)
+    panel.set_device_alarm("burglar", 1, 1)
+
+    def stop_itv2():
+        time.sleep(30)
+        panel.stopITv2Session()
+
+    thread_ac = threading.Thread(target=stop_itv2)
+    thread_ac.start()
+
+    panel.connectITv2()
+
+
+# add_dsc_panel()
+
+
+def check_for_warnings(panel_serial: str, zone_number: int):
+    logger = logging.getLogger('test')
+    logger.setLevel('DEBUG')
+    logger.addHandler(logging.StreamHandler())
+    api = GuiApi(IP, logger)
+    api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
+
+    unit_id = api.Units.getUnitId(panel_serial)
+    dev_id = api.Diagnostic.getDeviceId(unit_id, 'ZONE', zone_number)
+    all_info = api.Diagnostic.getDevices(unit_id)
+    for i in all_info:
+        if i.get('id', '') == dev_id:
+            if i.get('warnings', ''):
+                for var1 in i.get('warnings', ''):
+                    print(f"We have warnings type: {var1.get('type', '')} severity: {var1.get('severity', '')}")
+
+
+# check_for_warnings(serial, 1)
+# check_for_warnings(serial, 2)
+
+
+def walk_test(panel_serial):
+    logger = logging.getLogger('test')
+    logger.setLevel('DEBUG')
+    logger.addHandler(logging.StreamHandler())
+    api = GuiApi(IP, logger)
+    api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
+    unit_id = api.Units.getUnitId(panel_serial)
+
+    api.Diagnostic.post('/unit_diagnostic/walkteststart', {"unt_id": unit_id})
 
 
 
-# def show():
-#         logger = logging.getLogger('test')
-#         logger.setLevel('DEBUG')
-#         logger.addHandler(logging.StreamHandler())
-#
-#
-#             api = GuiApi(self.ip, logger)
-#             api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
+def add_dsc_panel2():
+    panel = NeoPanel(serial=serial, account=serial, media='IP', model='HS3128',
+                     logger=logging.basicConfig(level='DEBUG'))
+    panel.config.host = IP
+
+    panel.config.devices.add_device("CONTACT")
+    panel.config.devices.add_device("CONTACT")
+
+    # panel.set_device_trouble("tamper", 1, 2)
+    # panel.set_device_alarm("burglar", 1, 1)
+
+    def stop_itv2():
+        time.sleep(30)
+        panel.stopITv2Session()
 
 
 
+    thread_ac = threading.Thread(target=stop_itv2)
+    thread_ac.start()
 
-# from gevent.monkey import patch_all
-#
-# patch_all()
-# from ipmp.emu.neo import NeoPanel
-# import gevent
-# import time
-# import sys
-# import typing
-# import logging
-# from ipmp.pages.rest.api import GuiApi
+    panel.connectITv2()
+
+    logger = logging.getLogger('test')
+    logger.setLevel('DEBUG')
+    logger.addHandler(logging.StreamHandler())
+    api = GuiApi(IP, logger)
+    api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
+    unit_id = api.Units.getUnitId(serial)
+
+    dev_id = api.Diagnostic.getDeviceId(unit_id, 'ZONE', 1)
+    panel.set_device_flag('open', "CONTACT", str(dev_id), 1)
+
+    # def set_device_flag(self, flag, value, dev_type, dev_number):
+    #     '''
+    #     Set device attribute
+    #     :param flag: Name of attribute. See .device.Device constructor
+    #     :param value: Attribute value
+    #     :param dev_type: type of device. See .devdb.DeviceDB constructor registerDeviceClass method calls
+    #     :param dev_number: number of device
+    #     :return: True or False
+    #     '''
+
+    thread_ac.start()
+    panel.connectITv2()
 
 
-#
-# class CreatorScript:
-#
-#     def __init__(self, ip='94.125.123.180'):
-#         self.ip = ip
-#
-#     def _neo_panels(self, number: int):
-#         serials = ['%X' % (i + 0xB00000000000) for i in range(number)]
-#         panels = [NeoPanel(serial=serial, account=serial[2:], media='IP', model='HS3128') for serial in serials]
-#         host = self.ip
-#         tasks = list()
-#         for i, panel in enumerate(panels):
-#             panel.config.host = host
-#             tasks.append(gevent.spawn(panel.connectITv2))
-#             # time.sleep(1)
-#             panel.sendInit()
-#             panel.sendHeartBeat()
-#         gevent.joinall(tasks)
-#
-#     def AddUsers(self, number):
-#         logger = logging.getLogger('test')
-#         logger.setLevel('DEBUG')
-#         logger.addHandler(logging.StreamHandler())
-#
-#         for n in range(1, number):
-#             api = GuiApi(self.ip, logger)
-#             api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-#             api.User.add_user(usr_name="USER" + str(n), usr_email="myfavoritenumber" + str(n) + "@mail.com",
-#                               usr_phone='666666' + str(n),
-#                               coy_id=n, roe_id=2, usr_password="123456")
-#
-#             api.Login.login(usr_email="myfavoritenumber" + str(n) + "@mail.com", usr_password='123456')
-#             api.User.add_user(usr_name="USERAS" + str(n), usr_email="thisnumber" + str(n) + "@mail.com",
-#                               usr_phone='6336' + str(n),
-#                               coy_id=n, roe_id=2, usr_password="123456")
-#         #   api.Roles.add_role(roe_name='Role'+str(n*100),roe_roe_id=2,utg_id=[n])
-#
-#     def AddCS(self, number):
-#         logger = logging.getLogger('test')
-#         logger.setLevel('DEBUG')
-#         logger.addHandler(logging.StreamHandler())
-#
-#         # CREATE 10 CS (10 unique value of Central station names,protocols,hosts,ports)
-#
-#         for n in range(1, number):
-#             api = GuiApi(self.ip, logger)
-#             api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-#             api.CentralStations.add_cs(cls_name="AStation" + str(n), cls_heart_beat=25, cls_retry_time=10,
-#                                        cls_retry_count=4, hpa_host="94.125.124.1" + str(n), hpa_port=5000 + n,
-#                                        cls_ssl="none",
-#                                        cls_receiver=33, cls_line=2, csp_id=n)
-#
-#     def AddRoles(self, number):
-#         logger = logging.getLogger('test')
-#         logger.setLevel('DEBUG')
-#         logger.addHandler(logging.StreamHandler())
-#
-#         for n in range(1, number):
-#             api = GuiApi(self.ip, logger)
-#             api.Login.login(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-#
-#             api.Roles.add_role(roe_name='Role' + str(n), roe_roe_id=2, utg_id=[1])
+
+    thread_ac.start()
+    panel.connectITv2()
+
+add_dsc_panel2()
