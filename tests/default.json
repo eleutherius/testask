@@ -1,0 +1,121 @@
+[
+    {
+        "section": {
+            "fields": [
+                {
+                    "default": "Default Super Admin", 
+                    "description": "", 
+                    "label": "", 
+                    "name": "userfullname", 
+                    "type": "edit"
+                }, 
+                {
+                    "default": "192.168.16.64",
+                    "description": "IPMP server name/IP", 
+                    "label": "", 
+                    "name": "hostname", 
+                    "type": "edit"
+                }, 
+                {
+                    "default": "admin@tycomonitor.com",
+                    "description": "", 
+                    "label": "", 
+                    "name": "username", 
+                    "type": "edit"
+                }, 
+                {
+                    "default": "Admin123", 
+                    "description": "", 
+                    "label": "", 
+                    "name": "password", 
+                    "type": "edit"
+                }
+            ], 
+            "title": "connection"
+        }
+    }, 
+    {
+        "section": {
+            "fields": [
+                {
+                    "default": "root", 
+                    "description": "", 
+                    "label": "", 
+                    "name": "sshuser", 
+                    "type": "edit"
+                }, 
+                {
+                    "default": "visonic",
+                    "description": "", 
+                    "label": "", 
+                    "name": "sshpwd", 
+                    "type": "edit"
+                }
+            ], 
+            "title": "sshaccess"
+        }
+    },
+    {
+        "section": {
+            "fields": [
+                {
+                    "default": "mx1.visonic",
+                    "description": "Email server",
+                    "label": "Email server",
+                    "name": "email_server",
+                    "type": "edit"
+                },
+                {
+                    "default": "2fa@visonic.ua",
+                    "description": "User email",
+                    "label": "User email",
+                    "name": "master_email",
+                    "type": "edit"
+                },
+                {
+                    "default": "visonic",
+                    "description": "password",
+                    "label": "User password",
+                    "name": "master_password",
+                    "type": "edit"
+                }
+            ],
+            "title": "Email"
+        }
+    },
+    {
+        "section": {
+            "fields": [
+                {
+                    "default": "0",
+                    "description": "Seed for tests randomizer",
+                    "label": "Random seed",
+                    "name": "seed",
+                    "type": "edit"
+                }
+            ],
+            "title": "random"
+        }
+    },
+    {
+        "section": {
+            "fields": [
+                {
+                    "default": "0",
+                    "description": "jenkins build number",
+                    "label": "build",
+                    "name": "build",
+                    "type": "edit"
+                },
+                {
+                    "default": "0",
+                    "description": "merge request",
+                    "label": "merge request",
+                    "name": "merge",
+                    "type": "edit"
+                }
+            ],
+            "title": "build"
+        }
+    }
+]
