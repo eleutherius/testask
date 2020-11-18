@@ -42,7 +42,9 @@ class TestTask2_1(TestCase):
 
     def Close(self): pass
 
-    def CreateEnvironment(self): pass
+    def CreateEnvironment(self):
+        self.AddMessage('Exeception!!!')
+        raise Exception("Sorry!!!")
 
     def RemoveEnvironment(self): pass
 

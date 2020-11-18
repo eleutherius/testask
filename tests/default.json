@@ -10,7 +10,7 @@
                     "type": "edit"
                 }, 
                 {
-                    "default": "192.168.16.64",
+                    "default": "94.125.123.58",
                     "description": "IPMP server name/IP", 
                     "label": "", 
                     "name": "hostname", 
