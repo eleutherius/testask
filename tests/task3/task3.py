@@ -13,7 +13,7 @@ class Data(Namespace):
         self.group_name = "New group"
         self.group_id: str
         self.psp_panel_id: str
-
+        self.psp_panel_serial: str = "C10070010101"
         pass
 
 
@@ -25,11 +25,11 @@ class Data(Namespace):
 
 
 @executable(context=Data)
-class TestTask3_1(TestCase):
+class AddGroups(TestCase):
 
     def __init__(self, data, *args, **kwargs):
         self.data = data
-        super(TestTask3_1, self).__init__(*args, **kwargs)
+        super(AddGroups, self).__init__(*args, **kwargs)
 
     def CreateGroup_Test(self):
         self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
@@ -39,20 +39,32 @@ class TestTask3_1(TestCase):
         resp = self.GuiApi.Group.addGroup("New group")
         self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
         # self.AddMessage(resp.json())
-        self.data.group_id = resp.json()['utg_id']
+        self.data.group_id = resp.json()['data']['utg_id']
+
+@executable(context=Data)
+class AddPanels(TestCase):
+
+    def __init__(self, data, *args, **kwargs):
+        self.data = data
+        super(AddPanels, self).__init__(*args, **kwargs)
 
     def AddPspPanel_Test(self):
         self.AddMessage('Add PSP panel manually')
         self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
         whoami = self.GuiApi.Login.whoami()
         self.AssertTrue(whoami, 'Not OK', 'OK')
-        resp = self.GuiApi.Units.add(unt_serial="C10070010101", unt_account="7541FF",
-                                      unt_name="000070010101", utg_id=int("1"), vendor='NEO',
-                                      _unt_module_gprs='offline', _unt_module_bb='offline')
+        resp = self.GuiApi.Units.add(unt_serial=self.data.psp_panel_serial, unt_account="7541FF",
+                                     unt_name=self.data.psp_panel_serial, utg_id=int("1"), vendor='NEO',
+                                     _unt_module_gprs='offline', _unt_module_bb='offline')
         self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
-        self.AddMessage(resp.json())
-        resp = self.GuiApi.Units.get_all_units
-        self.AddMessage(resp.json())
+
+        p_id = self.GuiApi.Units.getUnitId(unt_serial=self.data.psp_panel_serial)
+        # self.AddMessage(type(self.data.psp_panel_id))
+        change_group = self.GuiApi.Units.change_unit_group(groupId=self.data.group_id,
+                                                           unitId=[p_id])
+        # self.AssertTrue(change_group, 'Not OK', 'OK')
+        self.AddMessage(change_group)
+
 
     def AddPmaxPanel_Test(self):
         self.AddMessage('Add Pmax panel manually')
@@ -61,28 +73,23 @@ class TestTask3_1(TestCase):
         self.AssertTrue(whoami, 'Not OK', 'OK')
 
         resp = self.GuiApi.Units.add(unt_serial="A3B1B3", unt_account="005678", unt_name="03B1B3",
-                                _unt_module_gprs=True, _unt_module_bba=False, utg_id=int("1"), vendor='POWER_MASTER')
-        self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
-
-    def GetAllUnits_Test(self):
-        self.AddMessage('Add Pmax panel manually')
-        self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-        whoami = self.GuiApi.Login.whoami()
-        self.AssertTrue(whoami, 'Not OK', 'OK')
-        resp = self.GuiApi.Units.get_all_units
-        self.AddMessage(resp)
+                                     _unt_module_gprs=True, _unt_module_bba=False, utg_id=int("1"),
+                                     vendor='POWER_MASTER')
+        self.AssertTrue(resp.json(), 'Failure', 'Success!!!')
 
 
-    # def ChangeGroupPsp_Test(self):
-    #     self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-    #     self.AddMessage('Change group for PSP panel')
-    #     resp = self.GuiApi.Units.change_unit_group(groupId=1 , unitId=[1])
-    #     self.AddMessage(resp.json())
-    def Setup(self): pass
-
-    def Close(self): pass
-
-    def CreateEnvironment(self): pass
-
-    def RemoveEnvironment(self): pass
+# @executable(context=Data)
+# class TestTask3_2(TestCase):
+#
+#     def __init__(self, data, *args, **kwargs):
+#         self.data = data
+#         super(TestTask3_2, self).__init__(*args, **kwargs)
+#
+#     def ChangeGroup_Test(self):
+#         self.AddMessage('Add Pmax panel manually')
+#         self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
+#         whoami = self.GuiApi.Login.whoami()
+#         self.AssertTrue(whoami, 'Not OK', 'OK')
+#         # resp = self.GuiApi.Units.get_all_units
+#         # self.AddMessage(resp)
 
