@@ -3,8 +3,11 @@ from testcase.testflow import executable
 from atl.utils.sequences import Namespace
 from ipmp.pages import GuiApi
 import json
+from threading import Thread
+from atl.utils.sequences import Namespace
+from ipmp.emu.neo import NeoPanel
 
-_ALIAS_ = 'MyRestTests'
+_ALIAS_ = 'MyPanelsTests'
 
 
 class Data(Namespace):
@@ -18,9 +21,9 @@ class Data(Namespace):
 
 
 """
-1. Create a group, add two panels (pmax, neo), choose new group for neo panel.
-2. Choose a different sms broker for wakeup and notifications.
-3. Register rest client and installer complete registration ,  delete these users.
+1. Enrol panel with contact -> activate -> check contact present on gui
+2. Enrol panel -> activate -> generate two same events -> check that both events are displayed
+3. Enrol panel (GSM) -> activate -> send hb -> disconnect panel -> check state status for gprs
 """
 
 
@@ -31,58 +34,18 @@ class TestTask3_1(TestCase):
         self.data = data
         super(TestTask3_1, self).__init__(*args, **kwargs)
 
-    def CreateGroup_Test(self):
-        self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-        whoami = self.GuiApi.Login.whoami()
-        self.AssertTrue(whoami, 'Not OK', 'OK')
-        self.AddMessage(whoami.json()['data']['permissions'])
-        resp = self.GuiApi.Group.addGroup("New group")
-        self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
-        # self.AddMessage(resp.json())
-        self.data.group_id = resp.json()['utg_id']
-
-    def AddPspPanel_Test(self):
-        self.AddMessage('Add PSP panel manually')
-        self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-        whoami = self.GuiApi.Login.whoami()
-        self.AssertTrue(whoami, 'Not OK', 'OK')
-        resp = self.GuiApi.Units.add(unt_serial="C10070010101", unt_account="7541FF",
-                                      unt_name="000070010101", utg_id=int("1"), vendor='NEO',
-                                      _unt_module_gprs='offline', _unt_module_bb='offline')
-        self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
-        self.AddMessage(resp.json())
-        resp = self.GuiApi.Units.get_all_units
-        self.AddMessage(resp.json())
-
-    def AddPmaxPanel_Test(self):
-        self.AddMessage('Add Pmax panel manually')
-        self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-        whoami = self.GuiApi.Login.whoami()
-        self.AssertTrue(whoami, 'Not OK', 'OK')
-
-        resp = self.GuiApi.Units.add(unt_serial="A3B1B3", unt_account="005678", unt_name="03B1B3",
-                                _unt_module_gprs=True, _unt_module_bba=False, utg_id=int("1"), vendor='POWER_MASTER')
-        self.AssertTrue(resp.json()['status'] == 'success', 'Failure', 'Success!!!')
-
-    def GetAllUnits_Test(self):
-        self.AddMessage('Add Pmax panel manually')
-        self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-        whoami = self.GuiApi.Login.whoami()
-        self.AssertTrue(whoami, 'Not OK', 'OK')
-        resp = self.GuiApi.Units.get_all_units
-        self.AddMessage(resp)
-
-
-    # def ChangeGroupPsp_Test(self):
-    #     self.AssertLoginWasSuccess(usr_email='admin@tycomonitor.com', usr_password='Admin123')
-    #     self.AddMessage('Change group for PSP panel')
-    #     resp = self.GuiApi.Units.change_unit_group(groupId=1 , unitId=[1])
-    #     self.AddMessage(resp.json())
-    def Setup(self): pass
-
-    def Close(self): pass
-
-    def CreateEnvironment(self): pass
-
-    def RemoveEnvironment(self): pass
-
+    def EnrollPanel_Test(self):
+        self.AddMessage(f'Start test!')
+        neo = NeoPanel('A78899999999', '6999999999', 'IP', model='HS3128')
+        neo.config.version = '05.30'
+        neo.config.host = self.connection.hostname
+        for i in range(4):
+            neo.config.fibroReceivers[i]['host'] = '0.0.0.0'
+            neo.config.fibroReceivers[i]['hb'] = 0
+        neo.config.Eprom.refresh()
+        neo.add_device("contact", 1)
+        
+        thread = Thread(target=neo.connectITv2(connection_type="ip"))
+        thread.start()
+        thread.join()
+        self.AddMessage(f'Test finish!')
