@@ -11,7 +11,6 @@ class Data(Namespace):
 
     def __init__(self):
         super(Data, self).__init__()
-        self.psp_panel_id: str
         self.device_number = 1
         self.psp_panel_serial = "C10070010101"
         self.psp_fibro_account = "6999999999"
@@ -48,14 +47,17 @@ class TestTask3_1(DscMethod):
         self.AssertTrue(get_zone["subtype"] == "CONTACT", "Zone is not contact", f"Zone {self.data.device_number} is "
                                                                                  f"contact")
 
-    def get_device(self, serial, device_type: str, device_number: int) -> dict:
-        unt_id = self.GuiApi.Units.getUnitId(serial)
-        return self.GuiApi.Diagnostic.getDevice(unt_id, device_type, device_number)
-
-    def EnrollPspGPRS_Panel_Test(self):
+    def EnrollPspPanel_via_GSM_Test(self):
         self.neo.setMedia("GSM")
         self.enroll_panel()
         self.AssertTrue(self.getStatusGsmUnit(self.neo.serial), "GSM module is not exist!", "GSM  module is exist")
+
+    def GenerateTwoEvents_PSP_Test(self):
+        self.enroll_panel()
+        self.GenerateAlarm(self.neo, alarm='PA')
+        self.GenerateAlarm(self.neo, alarm='PA')
+        events_id = self.getIdEventsForPanel(self.neo.serial)
+        self.AssertTrue(len(events_id) == 2, "Events are not displayed", "Events are displayed")
 
     def enroll_panel(self):
         thread = Thread(target=self.neo.connectITv2)
@@ -67,9 +69,6 @@ class TestTask3_1(DscMethod):
         self.neo.stopITv2Session()
         thread.join()
 
-    def GenerateEvents_Panel_Test(self):
-        self.enroll_panel()
-        self.GenerateAlarm(self.neo, alarm='PA')
-        self.GenerateAlarm(self.neo, alarm='PA')
-        events_id = self.getIdEventsForPanel(self.neo.serial)
-        self.AssertTrue(len(events_id) == 2, "Events are not displayed", "Events are displayed")
+    def get_device(self, serial, device_type: str, device_number: int) -> dict:
+        unt_id = self.GuiApi.Units.getUnitId(serial)
+        return self.GuiApi.Diagnostic.getDevice(unt_id, device_type, device_number)
