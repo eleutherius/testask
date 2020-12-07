@@ -1,13 +1,8 @@
-# from ..library import TestCase
 from ..library.common import DscMethod
 from testcase.testflow import executable
-from atl.utils.sequences import Namespace
-from ipmp.pages import GuiApi
-import json
 from threading import Thread
 from atl.utils.sequences import Namespace
 from ipmp.emu.neo import NeoPanel
-import time
 
 _ALIAS_ = 'MyPanelsTests'
 
@@ -76,7 +71,5 @@ class TestTask3_1(DscMethod):
         self.enroll_panel()
         self.GenerateAlarm(self.neo, alarm='PA')
         self.GenerateAlarm(self.neo, alarm='PA')
-        # events = self.GuiApi.Events.getEvents()
-        time.sleep(3)
         events_id = self.getIdEventsForPanel(self.neo.serial)
-        self.AssertTrue(len(events_id) == 2, "Events are not displayed",  "Events are displayed")
+        self.AssertTrue(len(events_id) == 2, "Events are not displayed", "Events are displayed")
