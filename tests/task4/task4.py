@@ -25,11 +25,11 @@ class Data(Namespace):
 
 
 @executable(context=Data)
-class TestTask3_1(DscMethod):
+class TestTask3(DscMethod):
 
     def __init__(self, data, *args, **kwargs):
         self.data = data
-        super(TestTask3_1, self).__init__(*args, **kwargs)
+        super(TestTask3, self).__init__(*args, **kwargs)
         self.neo = NeoPanel(self.data.psp_panel_serial, self.data.psp_fibro_account, 'IP', model='HS3128')
         self.neo.config.host = self.connection.hostname
 
@@ -40,7 +40,7 @@ class TestTask3_1(DscMethod):
         serials = [self.neo.serial]
         self.AssertPanelWasRemovedIfNeeded(serials)
 
-    def EnrollPanel_Test(self):
+    def EnrollPanel_with_ZONE1_Test(self):
         self.neo.add_device("contact", self.data.device_number)
         self.enroll_panel()
         get_zone = self.get_device(self.data.psp_panel_serial, "ZONE", self.data.device_number)
