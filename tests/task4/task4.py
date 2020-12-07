@@ -50,7 +50,7 @@ class TestTask3(DscMethod):
     def EnrollPspPanel_via_GSM_Test(self):
         self.neo.setMedia("GSM")
         self.enroll_panel()
-        self.AssertTrue(self.getStatusGsmUnit(self.neo.serial), "GSM module is not exist!", "GSM  module is exist")
+        self.AssertTrue(self.getStatusGsmUnit(self.neo.serial), "GSM module is not exist!", "GSM  module is exists")
 
     def GenerateTwoEvents_PSP_Test(self):
         self.enroll_panel()
